@@ -1,0 +1,550 @@
+:root {
+  /* Role accents are overwritten from JS when the role changes. */
+  --accent: #38bdf8;
+  --accent-2: #6366f1;
+  --glow: rgba(56, 189, 248, 0.35);
+
+  --bg: #050b1f;
+  --bg-2: #0a1440;
+  --panel: rgba(10, 20, 55, 0.72);
+  --panel-solid: #0b163f;
+  --border: rgba(120, 160, 255, 0.18);
+  --text: #e6edff;
+  --muted: #8ea0cc;
+  --radius: 16px;
+  --font: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: radial-gradient(1200px 700px at 15% -10%, var(--bg-2), transparent 60%),
+    radial-gradient(900px 600px at 110% 110%, #1a0b4a, transparent 60%), var(--bg);
+  overflow: hidden;
+}
+
+/* ---------- Background: grid + neon glow ---------- */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  background-image: linear-gradient(rgba(110, 150, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 150, 255, 0.09) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 85%);
+  pointer-events: none;
+}
+
+.bg-glow {
+  position: fixed;
+  inset: -20%;
+  background: radial-gradient(500px 400px at 30% 30%, var(--glow), transparent 70%),
+    radial-gradient(500px 400px at 75% 70%, color-mix(in srgb, var(--accent-2) 30%, transparent), transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  transition: background 0.6s ease;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  to {
+    transform: translate(3%, -2%) scale(1.05);
+  }
+}
+
+/* ---------- Layout ---------- */
+.app {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px 20px 20px;
+  gap: 14px;
+}
+
+.utility {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.title {
+  text-align: center;
+}
+
+.title h1 {
+  margin: 0;
+  font-size: clamp(26px, 5vw, 38px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, #fff, var(--accent) 55%, var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 18px var(--glow));
+}
+
+.title p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---------- Role picker: three pills in a row ---------- */
+.role-list {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.role-card {
+  --c: #38bdf8;
+  --c2: #6366f1;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  backdrop-filter: blur(12px);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.15s, background 0.25s;
+}
+
+.role-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--c) 50%, transparent);
+}
+
+.role-card[aria-checked='true'] {
+  border-color: var(--c);
+  box-shadow: 0 0 0 1px var(--c) inset, 0 0 28px color-mix(in srgb, var(--c) 40%, transparent);
+  background: color-mix(in srgb, var(--c) 16%, var(--panel-solid));
+}
+
+.role-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  color: #04102c;
+  background: linear-gradient(135deg, var(--c), var(--c2));
+}
+
+.role-title {
+  font-weight: 600;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* ---------- Buttons ---------- */
+.ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(10, 20, 55, 0.5);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.ghost-btn:hover {
+  border-color: var(--accent);
+}
+
+.ghost-btn .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f87171;
+  box-shadow: 0 0 8px #f87171;
+}
+
+.ghost-btn .dot.ok {
+  background: #34d399;
+  box-shadow: 0 0 8px #34d399;
+}
+
+.primary-btn {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 0;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #04102c;
+  font: inherit;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ---------- Chat panel ---------- */
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 20px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 14%, transparent);
+  overflow: hidden;
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.chat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent);
+  transition: background 0.5s ease;
+}
+
+.chat-role {
+  font-weight: 600;
+}
+
+.chat-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.model-tag {
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.msg {
+  max-width: 82%;
+  padding: 12px 15px;
+  border-radius: 14px;
+  line-height: 1.55;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  animation: pop 0.2s ease;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+.msg.user {
+  align-self: flex-end;
+  color: #04102c;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  border-bottom-right-radius: 4px;
+  white-space: pre-wrap;
+}
+
+.msg.bot {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+.msg.error {
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #fecaca;
+}
+
+.msg.bot p {
+  margin: 0 0 8px;
+}
+.msg.bot p:last-child {
+  margin-bottom: 0;
+}
+.msg.bot ul,
+.msg.bot ol {
+  margin: 4px 0 8px;
+  padding-left: 20px;
+}
+.msg.bot h3,
+.msg.bot h4 {
+  margin: 10px 0 6px;
+  font-size: 14px;
+  color: var(--accent);
+}
+.msg.bot code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.msg.bot pre {
+  margin: 8px 0;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.msg.bot pre code {
+  padding: 0;
+  background: none;
+}
+
+.typing span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: blink 1s infinite ease-in-out;
+}
+.typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.welcome {
+  margin: auto;
+  text-align: center;
+  max-width: 460px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.welcome .big-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  color: #04102c;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 30px var(--glow);
+}
+
+.welcome h2 {
+  color: var(--text);
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 18px 12px;
+}
+
+.chip {
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--text);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chip:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 12px;
+  margin: 0 12px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(3, 8, 28, 0.6);
+  transition: border-color 0.2s;
+}
+
+.composer:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.composer textarea {
+  flex: 1;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  max-height: 160px;
+}
+
+.composer textarea::placeholder {
+  color: var(--muted);
+}
+
+.send-btn {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: #04102c;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---------- API key dialog ---------- */
+.key-dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 24px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--panel-solid);
+  color: var(--text);
+  box-shadow: 0 0 60px var(--glow);
+}
+
+.key-dialog::backdrop {
+  background: rgba(2, 6, 20, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.key-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.key-dialog p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.key-dialog a {
+  color: var(--accent);
+}
+
+.key-dialog label {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.key-dialog input[type='password'] {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  outline: none;
+}
+
+.key-dialog input[type='password']:focus {
+  border-color: var(--accent);
+}
+
+.key-dialog .remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 760px) {
+  .app {
+    padding: 12px 16px;
+  }
+  .role-list {
+    gap: 8px;
+  }
+  .role-card {
+    padding: 6px 12px 6px 6px;
+  }
+  .role-title {
+    font-size: 12.5px;
+  }
+  .msg {
+    max-width: 92%;
+  }
+}
